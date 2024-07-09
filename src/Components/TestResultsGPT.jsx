@@ -23,10 +23,10 @@ const TestResultsGPT = ({ testName, testValue,category }) => {
         model: 'gpt-3.5-turbo',
       });
 
-      console.log(chatCompletion)
+    
 
       const gptResponse = chatCompletion.choices?.[0]?.message?.content;
-      console.log(gptResponse)
+      
 
       if (gptResponse) {
         const gptResults = gptResponse.split('\n').filter(item => item);
