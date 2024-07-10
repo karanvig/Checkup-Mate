@@ -47,7 +47,7 @@ const TestResultsGPT = ({ testName, testValue,category }) => {
       {loading ? (
         <p className="dark:text-neutral-50 pl-3">Loading...</p>
       ) : (
-        <div className="list-disc pl-3">
+        <div className="list-disc pl-3 space-y-2">
           {results.map((result, index) => (
             <p key={index} className="text-black dark:text-neutral-50">
               {result}

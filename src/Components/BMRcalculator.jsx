@@ -10,8 +10,15 @@ const BMRCalculator = () => {
   const [gender, setGender] = useState('');
   const [bmr, setBmr] = useState(null);
   const [showGptResults, setShowGptResults] = useState(false);
+  const [error, setError] = useState('');
 
   const calculateBMR = () => {
+    if (age <= 0 || weight <= 0 || height <= 0 || !gender) {
+      setError('Please enter valid values for all fields');
+      setBmr(null);
+      return;
+    }
+
     let bmrValue;
     if (gender === 'male') {
       bmrValue = 88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age);
@@ -19,10 +26,21 @@ const BMRCalculator = () => {
       bmrValue = 447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age);
     }
     setBmr(bmrValue.toFixed(2));
+    setError('');
   };
 
   const handleGptClick = () => {
     setShowGptResults(true);
+  };
+
+  const resetCalculator = () => {
+    setAge('');
+    setWeight('');
+    setHeight('');
+    setGender('');
+    setBmr(null);
+    setShowGptResults(false);
+    setError('');
   };
 
   return (
@@ -62,8 +80,9 @@ const BMRCalculator = () => {
         <button onClick={calculateBMR} className="bg-blue-500 text-white p-2 rounded">
           Calculate BMR
         </button>
-
-
+        <button onClick={resetCalculator} className="bg-gray-500 text-white p-2 rounded">
+          Reset
+        </button>
         <img
           src={gpt}
           alt="GPT"
@@ -71,16 +90,19 @@ const BMRCalculator = () => {
           style={{ filter: 'invert(50%)' }}
           onClick={handleGptClick}
         />
-
       </div>
 
-      {bmr && (
+      {error && (
+        <p className="text-red-500 mt-2">{error}</p>
+      )}
+
+      {bmr && !error && (
         <div className="mt-4 dark:text-neutral-600">
           <p>BMR: {bmr} kcal/day</p>
         </div>
       )}
 
-      {showGptResults && bmr && (
+      {showGptResults && bmr && !error && (
         <TestResultsGPT testName="BMR (Basal Metabolic Rate)" testValue={bmr} />
       )}
     </div>

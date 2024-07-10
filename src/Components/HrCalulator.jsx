@@ -7,9 +7,16 @@ const HrCalulator = () => {
   const [heartRate, setHeartRate] = useState('');
   const [category, setCategory] = useState('');
   const [showGptResults, setShowGptResults] = useState(false);
+  const [error, setError] = useState('');
 
   const categorizeHeartRate = () => {
     const hr = parseInt(heartRate);
+
+    if (isNaN(hr) || hr <= 0) {
+      setError('Please enter a valid heart rate value');
+      setCategory('');
+      return;
+    }
 
     let hrCategory = '';
     if (hr < 60) {
@@ -23,10 +30,18 @@ const HrCalulator = () => {
     }
 
     setCategory(hrCategory);
+    setError('');
   };
 
   const handleGptClick = () => {
     setShowGptResults(true);
+  };
+
+  const resetCalculator = () => {
+    setHeartRate('');
+    setCategory('');
+    setShowGptResults(false);
+    setError('');
   };
 
   return (
@@ -44,8 +59,9 @@ const HrCalulator = () => {
         <button onClick={categorizeHeartRate} className="bg-blue-500 text-white p-2 rounded">
           Categorize Heart Rate
         </button>
-
-
+        <button onClick={resetCalculator} className="bg-gray-500 text-white p-2 rounded">
+          Reset
+        </button>
         <img
           src={gpt}
           alt="GPT"
@@ -53,16 +69,19 @@ const HrCalulator = () => {
           style={{ filter: 'invert(50%)' }}
           onClick={handleGptClick}
         />
-
       </div>
 
-      {category && (
+      {error && (
+        <p className="text-red-500 mt-2">{error}</p>
+      )}
+
+      {category && !error && (
         <div className="mt-4 dark:text-neutral-600">
           <p>Category: {category}</p>
         </div>
       )}
 
-      {showGptResults && category && (
+      {showGptResults && category && !error && (
         <TestResultsGPT testName="Heart Rate Monitoring" testValue={category} />
       )}
     </div>

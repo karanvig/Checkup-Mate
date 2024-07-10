@@ -8,13 +8,22 @@ const BpCalculator = () => {
   const [diastolic, setDiastolic] = useState('');
   const [category, setCategory] = useState('');
   const [showGptResults, setShowGptResults] = useState(false);
+  const [error, setError] = useState('');
 
   const categorizeBloodPressure = () => {
     const sys = parseInt(systolic);
     const dia = parseInt(diastolic);
 
+    if (isNaN(sys) || isNaN(dia) || sys <= 0 || dia <= 0) {
+      setError('Please enter valid values for systolic and diastolic pressures');
+      setCategory('');
+      return;
+    }
+
     let bpCategory = '';
-    if (sys < 120 && dia < 80) {
+    if(sys<90 && dia<60){
+      bpCategory='Low'
+    }else if (sys < 120 && dia < 80) {
       bpCategory = 'Normal';
     } else if (sys >= 120 && sys < 130 && dia < 80) {
       bpCategory = 'Elevated';
@@ -29,10 +38,19 @@ const BpCalculator = () => {
     }
 
     setCategory(bpCategory);
+    setError('');
   };
 
   const handleGptClick = () => {
     setShowGptResults(true);
+  };
+
+  const resetCalculator = () => {
+    setSystolic('');
+    setDiastolic('');
+    setCategory('');
+    setShowGptResults(false);
+    setError('');
   };
 
   return (
@@ -57,8 +75,9 @@ const BpCalculator = () => {
         <button onClick={categorizeBloodPressure} className="bg-blue-500 text-white p-2 rounded">
           Categorize Blood Pressure
         </button>
-
-
+        <button onClick={resetCalculator} className="bg-gray-500 text-white p-2 rounded">
+          Reset
+        </button>
         <img
           src={gpt}
           alt="GPT"
@@ -66,16 +85,19 @@ const BpCalculator = () => {
           style={{ filter: 'invert(50%)' }}
           onClick={handleGptClick}
         />
-
       </div>
 
-      {category && (
+      {error && (
+        <p className="text-red-500 mt-2">{error}</p>
+      )}
+
+      {category && !error && (
         <div className="mt-4 dark:text-neutral-600">
           <p>Category: {category}</p>
         </div>
       )}
 
-      {showGptResults && category && (
+      {showGptResults && category && !error && (
         <TestResultsGPT testName="Blood Pressure Monitoring" testValue={category} />
       )}
     </div>
