@@ -43,7 +43,7 @@ const TestResultsGPT = ({ testName, testValue,category }) => {
 
   return (
     <div className="p-4 max-w-md mx-auto rounded-xl dark:bg-neutral-600 space-y-4">
-      <h2 className="text-2xl font-bold dark:text-neutral-100 ">Test Results for {testName}</h2>
+      <h2 className="text-2xl font-bold dark:text-neutral-100 ">Suggested Health Precautions</h2>
       {loading ? (
         <p className="dark:text-neutral-50 pl-3">Loading...</p>
       ) : (
